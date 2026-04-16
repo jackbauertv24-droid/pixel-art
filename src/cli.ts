@@ -62,12 +62,16 @@ program
   .option('-m, --max-pixels <number>', 'Maximum pixel count (auto-resize if exceeded)')
   .option('-t, --threshold <number>', 'Alpha threshold (0-255), pixels below are excluded', '0')
   .option('--simplify', 'Remove most common color as background')
+  .option('--detect-color-key', 'Auto-detect color key transparency (magenta, etc.)')
+  .option('--color-key <hex>', 'Manually specify color key (e.g., #FF00FF)')
   .option('--compact', 'Output compact JSON without whitespace')
   .action(async (inputFile: string, options: { 
     output?: string; 
     maxPixels?: string; 
     threshold: string;
     simplify?: boolean;
+    detectColorKey?: boolean;
+    colorKey?: string;
     compact?: boolean;
   }) => {
     try {
@@ -77,7 +81,9 @@ program
       const decoded = await decodeImage(inputFile, {
         threshold,
         maxPixels,
-        simplify: options.simplify
+        simplify: options.simplify,
+        detectColorKey: options.detectColorKey,
+        colorKey: options.colorKey
       });
       
       const json = options.compact 
@@ -105,11 +111,15 @@ program
   .option('-m, --max-pixels <number>', 'Maximum pixel count')
   .option('-s, --scale <number>', 'Scale factor for output', '1')
   .option('--simplify', 'Remove most common color as background')
+  .option('--detect-color-key', 'Auto-detect color key transparency (magenta, etc.)')
+  .option('--color-key <hex>', 'Manually specify color key (e.g., #FF00FF)')
   .action(async (inputFile: string, options: {
     output?: string;
     maxPixels?: string;
     scale: string;
     simplify?: boolean;
+    detectColorKey?: boolean;
+    colorKey?: string;
   }) => {
     try {
       const maxPixels = options.maxPixels ? parseInt(options.maxPixels, 10) : undefined;
@@ -117,7 +127,9 @@ program
       
       const decoded = await decodeImage(inputFile, {
         maxPixels,
-        simplify: options.simplify
+        simplify: options.simplify,
+        detectColorKey: options.detectColorKey,
+        colorKey: options.colorKey
       });
       
       decoded.scale = scale;

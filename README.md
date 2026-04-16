@@ -60,18 +60,26 @@ node dist/cli.js decode <input> [options]
 | `-m, --max-pixels <n>` | Maximum pixels (auto-resize if exceeded) |
 | `-t, --threshold <n>` | Alpha threshold (0-255), exclude transparent pixels |
 | `--simplify` | Remove most common color as background |
+| `--detect-color-key` | Auto-detect color key transparency (magenta, cyan, etc.) |
+| `--color-key <hex>` | Manually specify color key (e.g., `#FF00FF`) |
 | `--compact` | Output compact JSON without whitespace |
 
 Examples:
 ```bash
-# Decode a sprite, simplify by removing background
-node dist/cli.js decode sprite.png --simplify -o sprite.json
+# Decode at full resolution (default)
+node dist/cli.js decode sprite.png -o sprite.json
+
+# Auto-detect color key (magenta/cyan transparency)
+node dist/cli.js decode sprite.png --detect-color-key -o sprite.json
+
+# Manual color key specification
+node dist/cli.js decode sprite.png --color-key "#FF00FF" -o sprite.json
 
 # Decode with size limit (for large images)
 node dist/cli.js decode photo.jpg --max-pixels 1024 --simplify --compact
 
 # Output directly to stdout for LLM processing
-node dist/cli.js decode icon.png --simplify --compact
+node dist/cli.js decode icon.png --detect-color-key --compact
 ```
 
 ### `convert` - Convert image to pixel art PNG
@@ -86,6 +94,8 @@ node dist/cli.js convert <input> [options]
 | `-m, --max-pixels <n>` | Maximum pixel count |
 | `-s, --scale <number>` | Scale factor (default: "1") |
 | `--simplify` | Remove most common color as background |
+| `--detect-color-key` | Auto-detect color key transparency |
+| `--color-key <hex>` | Manually specify color key (e.g., `#FF00FF`) |
 
 ## JSON Format
 
