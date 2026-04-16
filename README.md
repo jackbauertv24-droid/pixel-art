@@ -83,9 +83,30 @@ Options:
   -h, --help            display help for command
 ```
 
-## Example
+## Examples
 
-See `examples/heart.json` for a sample pixel art definition.
+### Basic Example
+See `examples/heart.json` for a simple pixel art definition.
+
+### RPG Character Sprites
+The `examples/sprites/` directory contains classic D&D-style RPG sprites:
+
+| Sprite | Description |
+|--------|-------------|
+| `warrior.json` | Armored knight with sword (blue & silver) |
+| `wizard.json` | Robed mage with golden trim (purple) |
+| `rogue.json` | Hooded thief with daggers (dark grey) |
+| `cleric.json` | Holy priest in white robes with gold accents |
+| `dragon.json` | Green dragon with golden eyes |
+| `demon.json` | Red demon with glowing eyes |
+| `skeleton.json` | Undead warrior with red eyes |
+
+Generate all sprites:
+```bash
+for f in examples/sprites/*.json; do
+  node dist/cli.js "$f" -o "${f%.json}.png" --scale 4
+done
+```
 
 ## API Usage
 
