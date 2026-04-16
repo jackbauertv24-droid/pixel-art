@@ -1,2 +1,3 @@
 export { generatePNG, pngToBuffer } from './generator';
-export { validateInput, parseColor, type Pixel, type PixelArtInput, type RGBA } from './types';
+export { decodeImage, decodeFromBuffer, type DecodeOptions } from './decoder';
+export { validateInput, parseColor, rgbaToHex, type Pixel, type PixelArtInput, type RGBA } from './types';

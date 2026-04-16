@@ -11,16 +11,23 @@
     "build": "tsc",
     "start": "node dist/cli.js"
   },
-  "keywords": ["pixel-art", "cli", "image-generation", "llm-tool"],
+  "keywords": [
+    "pixel-art",
+    "cli",
+    "image-generation",
+    "llm-tool"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "commander": "^14.0.3",
-    "pngjs": "^7.0.0"
+    "pngjs": "^7.0.0",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
     "@types/pngjs": "^6.0.5",
+    "@types/sharp": "^0.31.1",
     "typescript": "^6.0.2"
   }
 }

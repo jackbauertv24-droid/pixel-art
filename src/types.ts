@@ -19,6 +19,14 @@ export interface RGBA {
   a: number;
 }
 
+export function rgbaToHex(r: number, g: number, b: number, a: number): string {
+  const toHex = (n: number) => n.toString(16).padStart(2, '0');
+  if (a === 255) {
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}${toHex(a)}`;
+}
+
 export function parseColor(color: string): RGBA {
   const hex = color.replace('#', '');
   

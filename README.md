@@ -1,6 +1,6 @@
 # pixel-art
 
-Generate pixel art PNG images from JSON input. Designed as a tool for LLMs to create pixel art.
+Generate pixel art PNG images from JSON input. Designed as a tool for LLMs to create and understand pixel art.
 
 ## Installation
 
@@ -11,20 +11,81 @@ npm run build
 
 ## Usage
 
-### From file
+The CLI now has three main commands:
+
+### `encode` - Generate PNG from JSON
 ```bash
-node dist/cli.js input.json -o output.png
+node dist/cli.js encode input.json -o output.png --scale 4
 ```
 
-### From stdin
+### `decode` - Convert image to JSON (for LLMs without vision)
 ```bash
-echo '{"width":2,"height":2,"pixels":[...]}' | node dist/cli.js -o output.png
+node dist/cli.js decode image.png -o output.json --simplify --max-pixels 1024
 ```
 
-### With scaling
+### `convert` - Convert any image to pixel art PNG
 ```bash
-node dist/cli.js input.json -o output.png --scale 10
+node dist/cli.js convert image.png -o pixel.png --max-pixels 256 --scale 4
 ```
+
+## Commands
+
+### `encode` - Generate PNG from JSON pixel data
+
+```bash
+node dist/cli.js encode [input] [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-o, --output <file>` | Output PNG file path (default: "output.png") |
+| `-s, --scale <number>` | Scale factor for pixels (default: "1") |
+
+From stdin:
+```bash
+echo '{"width":2,"height":2,"pixels":[...]}' | node dist/cli.js encode -o output.png
+```
+
+### `decode` - Decode image to JSON format
+
+Perfect for LLMs without vision capabilities - converts any image into structured JSON pixel data.
+
+```bash
+node dist/cli.js decode <input> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-o, --output <file>` | Output JSON file (prints to stdout if not set) |
+| `-m, --max-pixels <n>` | Maximum pixels (auto-resize if exceeded) |
+| `-t, --threshold <n>` | Alpha threshold (0-255), exclude transparent pixels |
+| `--simplify` | Remove most common color as background |
+| `--compact` | Output compact JSON without whitespace |
+
+Examples:
+```bash
+# Decode a sprite, simplify by removing background
+node dist/cli.js decode sprite.png --simplify -o sprite.json
+
+# Decode with size limit (for large images)
+node dist/cli.js decode photo.jpg --max-pixels 1024 --simplify --compact
+
+# Output directly to stdout for LLM processing
+node dist/cli.js decode icon.png --simplify --compact
+```
+
+### `convert` - Convert image to pixel art PNG
+
+```bash
+node dist/cli.js convert <input> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-o, --output <file>` | Output PNG file path |
+| `-m, --max-pixels <n>` | Maximum pixel count |
+| `-s, --scale <number>` | Scale factor (default: "1") |
+| `--simplify` | Remove most common color as background |
 
 ## JSON Format
 
@@ -68,21 +129,6 @@ Examples:
 - `#0000FF` - Blue
 - `#FF000080` - Semi-transparent red
 
-## CLI Options
-
-```
-Usage: pixel-art [options] [input]
-
-Arguments:
-  input                 JSON input file path (reads from stdin if not provided)
-
-Options:
-  -V, --version         output the version number
-  -o, --output <file>   Output PNG file path (default: "output.png")
-  -s, --scale <number>  Scale factor for pixels (default: "1")
-  -h, --help            display help for command
-```
-
 ## Examples
 
 ### Basic Example
@@ -100,28 +146,46 @@ The `examples/sprites/` directory contains classic D&D-style RPG sprites:
 | `dragon.json` | Green dragon with golden eyes |
 | `demon.json` | Red demon with glowing eyes |
 | `skeleton.json` | Undead warrior with red eyes |
+| `warrior-32.json` | 32x32 warrior with improved shading |
+| `wizard-32.json` | 32x32 wizard with proper proportions |
 
 Generate all sprites:
 ```bash
 for f in examples/sprites/*.json; do
-  node dist/cli.js "$f" -o "${f%.json}.png" --scale 4
+  node dist/cli.js encode "$f" -o "${f%.json}.png" --scale 4
 done
 ```
 
 ## API Usage
 
 ```typescript
-import { generatePNG, pngToBuffer, validateInput } from 'pixel-art';
+import { generatePNG, pngToBuffer, decodeImage, validateInput } from 'pixel-art';
 
+// Generate PNG from JSON
 const input = validateInput({
   width: 8,
   height: 8,
-  pixels: [
-    { x: 0, y: 0, color: '#FF0000' }
-  ]
+  pixels: [{ x: 0, y: 0, color: '#FF0000' }]
 });
-
 const png = generatePNG(input);
 const buffer = await pngToBuffer(png);
-// Write buffer to file
+
+// Decode image to JSON
+const decoded = await decodeImage('sprite.png', {
+  maxPixels: 1024,
+  simplify: true,
+  threshold: 10
+});
+console.log(decoded);
 ```
+
+## Supported Image Formats
+
+The decoder supports common image formats:
+- PNG
+- JPEG/JPG
+- GIF
+- WebP
+- TIFF
+- BMP
+- SVG (rasterized)
