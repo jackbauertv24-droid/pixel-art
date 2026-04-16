@@ -1,0 +1,26 @@
+{
+  "name": "pixel-art",
+  "version": "1.0.0",
+  "description": "Generate pixel art PNG images from JSON input - CLI tool for LLMs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "pixel-art": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js"
+  },
+  "keywords": ["pixel-art", "cli", "image-generation", "llm-tool"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^14.0.3",
+    "pngjs": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/pngjs": "^6.0.5",
+    "typescript": "^6.0.2"
+  }
+}
